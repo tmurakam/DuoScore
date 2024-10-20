@@ -36,6 +36,9 @@ class PDFViewController: UIViewController {
         super.viewDidLoad()
         
         setupPDFView()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupPDFView() {
@@ -53,6 +56,25 @@ class PDFViewController: UIViewController {
             pdfView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+
+    @objc func handleTap(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: pdfView)
+        //print("Tapped at: \(location)")
+
+        let rx = Double(location.x) / pdfView.frame.width
+        let ry = Double(location.y) / pdfView.frame.height
+        
+        //print("rx: \(rx), ry: \(ry)")
+
+        if (ry < 0.25) {
+            showMenu()
+        }
+        else if (rx > 0.75) {
+            pdfView.goToNextPage(self)
+        } else if (rx < 0.25) {
+            pdfView.goToPreviousPage(self)
+        }
+    }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         for press in presses {
@@ -66,7 +88,7 @@ class PDFViewController: UIViewController {
             }
         }
     }
-
+    
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         for press in presses {
             if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
@@ -78,5 +100,22 @@ class PDFViewController: UIViewController {
                 pdfView.goToNextPage(self)
             }
         }
+    }
+    
+    private func showMenu() {
+        let picker = DocumentPicker { urls in
+            if let url = urls.first {
+                let doc = PDFDocument(url: url)
+                if doc == nil {
+                    print("Failed to load PDF: document: \(url)")
+                } else {
+                    self.pdfDocument = doc
+                    self.pdfView.document = doc
+                }
+            }
+        }
+        
+        let hostingController = UIHostingController(rootView: picker)
+        self.present(hostingController, animated: true, completion: nil)
     }
 }
