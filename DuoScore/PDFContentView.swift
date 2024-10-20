@@ -6,29 +6,44 @@
 import SwiftUI
 import PDFKit
 
-struct PdfContentView: View {
+struct PDFContentView: View {
+    @State private var pdfDocument: PDFDocument?
+
     var body: some View {
-        PdfViewWrapper(urlString: "ballade4")
+        VStack {
+            if let pdfDocument = pdfDocument {
+                PDFViewWrapper(pdfDocument: pdfDocument)
+                    .edgesIgnoringSafeArea(.all)
+            } else {
+                Text("Loading PDF...")
+            }
+        }
+        .onAppear {
+            loadPDF()
+        }
+    }
+    
+    private func loadPDF() {
+        let url = Bundle.main.url(forResource: "ballade4", withExtension: "pdf")!
+        pdfDocument = PDFDocument(url: url)
     }
 }
 
-struct PdfViewWrapper: UIViewControllerRepresentable {
-    private let url: URL
-    private var pdfDocment: PDFDocument
-    
-    init(urlString: String) {
-        self.url = Bundle.main.url(forResource: urlString, withExtension: "pdf")!
-        self.pdfDocment = PDFDocument(url: url)!
+struct PDFViewWrapper: UIViewControllerRepresentable {
+    var pdfDocument: PDFDocument
+
+    init(pdfDocument: PDFDocument) {
+        self.pdfDocument = pdfDocument
     }
-    
+
     func makeUIViewController(context: Context) -> PDFViewController {
         let vc = PDFViewController()
-        vc.pdfDocument = pdfDocment
+        vc.pdfDocument = pdfDocument
         return vc
     }
     
     func updateUIViewController(_ uiViewController: PDFViewController, context: Context) {
-        uiViewController.pdfDocument = pdfDocment
+        uiViewController.pdfDocument = pdfDocument
     }
     
     func nextPage() {
@@ -97,51 +112,6 @@ class PDFViewController: UIViewController {
     }
 }
 
-/*
-class KeyTestController: UIHostingController<PdfView> {
-    private let pdfView: PdfView
-    
-    required override init(rootView: PdfView) {
-        self.pdfView = rootView
-        super.init(rootView: rootView)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func becomeFirstResponder() -> Bool {
-        true
-    }
-    
-    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        for press in presses {
-            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
-                print("prev")
-                //pdfView.prevPage()
-            }
-            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
-                print("next")
-                //pdfView.nextPage()
-            }
-        }
-    }
-
-    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        for press in presses {
-            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
-                print("prev")
-                pdfView.prevPage()
-            }
-            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
-                print("next")
-                pdfView.nextPage()
-            }
-        }
-    }
-}
-*/
-
 #Preview {
-    PdfContentView()
+    PDFContentView()
 }

@@ -11,7 +11,7 @@ import SwiftUI
 struct DuoScoreApp: App {
     var body: some Scene {
         WindowGroup {
-            PdfContentView()
+            PDFContentView()
         }
     }
 }
