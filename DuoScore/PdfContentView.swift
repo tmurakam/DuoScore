@@ -8,42 +8,96 @@ import PDFKit
 
 struct PdfContentView: View {
     var body: some View {
-        PdfView(urlString: "ballade4")
+        PdfViewWrapper(urlString: "ballade4")
     }
 }
 
-struct PdfView: UIViewRepresentable {
+struct PdfViewWrapper: UIViewControllerRepresentable {
     private let url: URL
-    private let pdfView: PDFView
+    private var pdfDocment: PDFDocument
     
     init(urlString: String) {
         self.url = Bundle.main.url(forResource: urlString, withExtension: "pdf")!
-        self.pdfView = PDFView()
+        self.pdfDocment = PDFDocument(url: url)!
     }
     
-    func makeUIView(context: Context) -> PDFView {
-        pdfView.document = PDFDocument(url: url)
-        pdfView.autoScales = true
-        pdfView.displayMode = .singlePage
-        pdfView.backgroundColor = .clear
-        
-        pdfView.window?.rootViewController = KeyTestController(rootView: self)
-        return pdfView
+    func makeUIViewController(context: Context) -> PDFViewController {
+        let vc = PDFViewController()
+        vc.pdfDocument = pdfDocment
+        return vc
     }
     
-    func updateUIView(_ uiView: PDFView, context: Context) {
-        //
+    func updateUIViewController(_ uiViewController: PDFViewController, context: Context) {
+        uiViewController.pdfDocument = pdfDocment
     }
     
     func nextPage() {
-        pdfView.goToNextPage(self)
+        //pdfView.goToNextPage(self)
     }
     
     func prevPage() {
-        pdfView.goToPreviousPage(self)
+        //pdfView.goToPreviousPage(self)
     }
 }
 
+class PDFViewController: UIViewController {
+    var pdfView = PDFView()
+    var pdfDocument: PDFDocument? {
+        didSet {
+            pdfView.document = pdfDocument
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setupPDFView()
+    }
+    
+    private func setupPDFView() {
+        pdfView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(pdfView)
+
+        pdfView.backgroundColor = .clear
+        pdfView.autoScales = true
+        pdfView.displayMode = .singlePage
+        
+        NSLayoutConstraint.activate([
+            pdfView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            pdfView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            pdfView.topAnchor.constraint(equalTo: view.topAnchor),
+            pdfView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses {
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
+                print("press prev")
+                //pdfView.prevPage()
+            }
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
+                print("press next")
+                //pdfView.nextPage()
+            }
+        }
+    }
+
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses {
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
+                print("release prev")
+                pdfView.goToPreviousPage(self)
+            }
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
+                print("release next")
+                pdfView.goToNextPage(self)
+            }
+        }
+    }
+}
+
+/*
 class KeyTestController: UIHostingController<PdfView> {
     private let pdfView: PdfView
     
@@ -86,7 +140,7 @@ class KeyTestController: UIHostingController<PdfView> {
         }
     }
 }
-
+*/
 
 #Preview {
     PdfContentView()
