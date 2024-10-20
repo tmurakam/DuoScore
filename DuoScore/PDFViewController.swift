@@ -105,17 +105,39 @@ class PDFViewController: UIViewController {
     private func showMenu() {
         let picker = DocumentPicker { urls in
             if let url = urls.first {
-                let doc = PDFDocument(url: url)
-                if doc == nil {
-                    print("Failed to load PDF: document: \(url)")
-                } else {
-                    self.pdfDocument = doc
-                    self.pdfView.document = doc
+                do {
+                    let isReachable = try url.checkResourceIsReachable()
+                    if !isReachable {
+                        print("Attempt to doenload from iCloud")
+                        try FileManager.default.startDownloadingUbiquitousItem(at: url)
+                        self.observeFiledownload(url: url)
+                    } else {
+                        self.loadPDF(url: url)
+                    }
+                } catch {
+                    print("Error: \(error)")
                 }
             }
         }
         
         let hostingController = UIHostingController(rootView: picker)
         self.present(hostingController, animated: true, completion: nil)
+    }
+    
+    private func loadPDF(url: URL) {
+        let doc = PDFDocument(url: url)
+        if doc == nil {
+            print("Failed to load PDF: document: \(url)")
+        } else {
+            self.pdfDocument = doc
+            self.pdfView.document = doc
+        }
+    }
+    
+    private func observeFiledownload(url: URL) {
+        let c = NSFileCoordinator()
+        c.coordinate(readingItemAt: url, options: [], error: nil) { newURL in
+            loadPDF(url: newURL)
+        }
     }
 }
