@@ -26,11 +26,23 @@ struct PDFKitView: UIViewRepresentable {
         pdfView.autoScales = true
         pdfView.displayMode = .singlePage
         pdfView.backgroundColor = .clear
+        
+        pdfView.window?.rootViewController = KeyTestController(rootView: self)
         return pdfView
     }
     
     func updateUIView(_ uiView: PDFView, context: Context) {
         //
+    }
+}
+
+class KeyTestController: UIHostingController<PDFKitView> {
+    required override init(rootView: PDFKitView) {
+        super.init(rootView: rootView)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
