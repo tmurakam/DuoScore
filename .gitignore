@@ -1,5 +1,6 @@
 xcuserdata/
 .build/
+.idea/
 *~
 *.hmap
 *.ipa
