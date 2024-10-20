@@ -8,11 +8,11 @@ import PDFKit
 
 struct PdfContentView: View {
     var body: some View {
-        PDFKitView(urlString: "ballade4")
+        PdfView(urlString: "ballade4")
     }
 }
 
-struct PDFKitView: UIViewRepresentable {
+struct PdfView: UIViewRepresentable {
     private let url: URL
     private let pdfView: PDFView
     
@@ -34,15 +34,56 @@ struct PDFKitView: UIViewRepresentable {
     func updateUIView(_ uiView: PDFView, context: Context) {
         //
     }
+    
+    func nextPage() {
+        pdfView.goToNextPage(self)
+    }
+    
+    func prevPage() {
+        pdfView.goToPreviousPage(self)
+    }
 }
 
-class KeyTestController: UIHostingController<PDFKitView> {
-    required override init(rootView: PDFKitView) {
+class KeyTestController: UIHostingController<PdfView> {
+    private let pdfView: PdfView
+    
+    required override init(rootView: PdfView) {
+        self.pdfView = rootView
         super.init(rootView: rootView)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        true
+    }
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses {
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
+                print("prev")
+                //pdfView.prevPage()
+            }
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
+                print("next")
+                //pdfView.nextPage()
+            }
+        }
+    }
+
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses {
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
+                print("prev")
+                pdfView.prevPage()
+            }
+            if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
+                print("next")
+                pdfView.nextPage()
+            }
+        }
     }
 }
 
