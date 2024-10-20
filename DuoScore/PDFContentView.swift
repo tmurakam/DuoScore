@@ -8,7 +8,8 @@ import PDFKit
 
 struct PDFContentView: View {
     @State private var pdfDocument: PDFDocument?
-
+    private let url: URL?
+    
     var body: some View {
         VStack {
             if let pdfDocument = pdfDocument {
@@ -23,13 +24,18 @@ struct PDFContentView: View {
         }
     }
     
+    init (url: URL?) {
+        self.url = url
+    }
+    
     private func loadPDF() {
-        let url = Bundle.main.url(forResource: "ballade4", withExtension: "pdf")!
-        pdfDocument = PDFDocument(url: url)
+        if pdfDocument != nil { return }
+        if let url = url {
+            pdfDocument = PDFDocument(url: url)
+        }
     }
 }
 
-
 #Preview {
-    PDFContentView()
+    PDFContentView(url: nil)
 }
