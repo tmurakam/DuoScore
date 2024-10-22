@@ -105,17 +105,22 @@ class PDFViewController: UIViewController {
     private func showMenu() {
         let picker = DocumentPicker { urls in
             if let url = urls.first {
-                do {
-                    let isReachable = try url.checkResourceIsReachable()
-                    if !isReachable {
-                        print("Attempt to download from iCloud")
-                        try FileManager.default.startDownloadingUbiquitousItem(at: url)
-                        self.observeFiledownload(url: url)
-                    } else {
-                        self.loadPDF(url: url)
+                if url.startAccessingSecurityScopedResource() {
+                    defer { url.stopAccessingSecurityScopedResource() }
+                    do {
+                        let isReachable = try url.checkResourceIsReachable()
+                        if !isReachable {
+                            print("Attempt to download from iCloud")
+                            try FileManager.default.startDownloadingUbiquitousItem(at: url)
+                            self.observeFiledownload(url: url)
+                        } else {
+                            self.loadPDF(url: url)
+                        }
+                    } catch {
+                        print("Error: \(error)")
                     }
-                } catch {
-                    print("Error: \(error)")
+                } else {
+                    print("startAccessingSecurityScopedResource() failed")
                 }
             }
         }
