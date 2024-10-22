@@ -2,13 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.org.tmurakam.DuoScore</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>DuoScore</string>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>Any</string>
+		</dict>
+	</dict>
 	<key>com.apple.developer.icloud-container-identifiers</key>
-	<array/>
+	<array>
+		<string>iCloud.org.tmurakam.DuoScore</string>
+	</array>
 	<key>com.apple.developer.icloud-services</key>
 	<array>
 		<string>CloudDocuments</string>
 	</array>
 	<key>com.apple.developer.ubiquity-container-identifiers</key>
-	<array/>
+	<array>
+		<string>iCloud.org.tmurakam.DuoScore</string>
+	</array>
 </dict>
 </plist>

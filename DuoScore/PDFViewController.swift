@@ -108,7 +108,7 @@ class PDFViewController: UIViewController {
                 do {
                     let isReachable = try url.checkResourceIsReachable()
                     if !isReachable {
-                        print("Attempt to doenload from iCloud")
+                        print("Attempt to download from iCloud")
                         try FileManager.default.startDownloadingUbiquitousItem(at: url)
                         self.observeFiledownload(url: url)
                     } else {
