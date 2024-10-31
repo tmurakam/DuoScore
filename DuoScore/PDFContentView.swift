@@ -7,26 +7,26 @@ import SwiftUI
 import PDFKit
 
 struct PDFContentView: View {
-    @State private var pdfDocument: PDFDocument?
-    @State private var showToolbar = true
+    @StateObject private var viewModel = PDFContentViewModel()
     
-    private let url: URL?
+    let url: URL?
     
     var body: some View {
         NavigationStack {
             VStack {
-                if let pdfDocument = pdfDocument {
-                    PDFViewWrapper(pdfDocument: pdfDocument)
+                if let pdfDocument = viewModel.pdfDocument {
+                    PDFViewWrapper(pdfContentViewModel: viewModel)
                         .edgesIgnoringSafeArea(.all)
                 } else {
                     Text("Loading PDF...")
                 }
             }
             .onAppear {
-                loadPDF()
+                viewModel.setUrl(url: url)
+                viewModel.loadPDF()
             }
             .toolbar {
-                if showToolbar {
+                if viewModel.showToolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                         } label: {
@@ -40,13 +40,8 @@ struct PDFContentView: View {
     
     init (url: URL?) {
         self.url = url
-    }
-    
-    private func loadPDF() {
-        if pdfDocument != nil { return }
-        if let url = url {
-            pdfDocument = PDFDocument(url: url)
-        }
+        //viewModel.setUrl(url: url)
+        //viewModel.loadPDF()
     }
 }
 

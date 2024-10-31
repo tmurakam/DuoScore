@@ -7,28 +7,28 @@ import SwiftUI
 import PDFKit
 
 struct PDFViewWrapper: UIViewControllerRepresentable {
-    var pdfDocument: PDFDocument
+    var viewModel: PDFContentViewModel
 
-    init(pdfDocument: PDFDocument) {
-        self.pdfDocument = pdfDocument
+    init(pdfContentViewModel: PDFContentViewModel) {
+        self.viewModel = pdfContentViewModel
     }
 
     func makeUIViewController(context: Context) -> PDFViewController {
         let vc = PDFViewController()
-        vc.pdfDocument = pdfDocument
+        vc.pdfContentViewModel = viewModel
         return vc
     }
     
     func updateUIViewController(_ uiViewController: PDFViewController, context: Context) {
-        uiViewController.pdfDocument = pdfDocument
+        uiViewController.pdfContentViewModel = viewModel
     }
 }
 
 class PDFViewController: UIViewController {
     var pdfView = PDFView()
-    var pdfDocument: PDFDocument? {
+    var pdfContentViewModel: PDFContentViewModel? {
         didSet {
-            pdfView.document = pdfDocument
+            pdfView.document = pdfContentViewModel?.pdfDocument
         }
     }
     
@@ -48,6 +48,7 @@ class PDFViewController: UIViewController {
         pdfView.backgroundColor = .clear
         pdfView.autoScales = true
         pdfView.displayMode = .singlePage
+        pdfView.displayBox = .mediaBox
         
         NSLayoutConstraint.activate([
             pdfView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -134,7 +135,7 @@ class PDFViewController: UIViewController {
         if doc == nil {
             print("Failed to load PDF: document: \(url)")
         } else {
-            self.pdfDocument = doc
+            self.pdfContentViewModel?.pdfDocument = doc
             self.pdfView.document = doc
         }
     }
