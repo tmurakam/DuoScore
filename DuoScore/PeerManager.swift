@@ -7,12 +7,14 @@ import SwiftUI
 import MultipeerConnectivity
 
 class PeerManager : NSObject {
-    let session: MCSession
-    let peerID: MCPeerID
-    var advertiser: MCNearbyServiceAdvertiser?
+    private let session: MCSession
+    private let peerID: MCPeerID
+    private var advertiser: MCNearbyServiceAdvertiser?
     
-    var isConnected = false
-    var isPrimary = false
+    private var _isConnected = false
+    private var _isPrimary = false
+
+    var viewModel: ScoreContentViewModel?
     
     override init() {
         peerID = MCPeerID(displayName: UIDevice.current.name)
@@ -21,8 +23,16 @@ class PeerManager : NSObject {
         session.delegate = self
     }
     
+    func isPrimary() -> Bool {
+        _isConnected && _isPrimary
+    }
+    
+    func isSecondary() -> Bool {
+        _isConnected && !_isPrimary
+    }
+    
     func invite() {
-        isPrimary = true
+        _isPrimary = true
         let browser = MCBrowserViewController(serviceType: "DuoScore", session: session)
         browser.delegate = self
         
@@ -37,7 +47,7 @@ class PeerManager : NSObject {
     }
     
     func advertise() {
-        isPrimary = false
+        _isPrimary = false
         advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: "DuoScore")
         advertiser?.delegate = self
         advertiser?.startAdvertisingPeer()
@@ -49,9 +59,18 @@ class PeerManager : NSObject {
     }
     
     func disconnect() {
-        isConnected = false
+        _isConnected = false
         stopAdvertise()
         session.disconnect()
+    }
+    
+    func sendCommand(_ command: Command) {
+        do {
+            let data = try? JSONEncoder().encode(command)
+            try session.send(data!, toPeers: session.connectedPeers, with: .reliable)
+        } catch let error {
+            print(error)
+        }
     }
 }
 
@@ -62,16 +81,19 @@ extension PeerManager: MCSessionDelegate {
             print("Connecting to \(peerID.displayName)")
         case .connected:
             print("Connected to \(peerID.displayName)")
-            isConnected = true
+            _isConnected = true
         case .notConnected:
             print("Not connected to \(peerID.displayName)")
-            isConnected = false
+            _isConnected = false
         @unknown default:
             print("Unknown state")
         }
     }
 
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        if let cmd = try? JSONDecoder().decode(Command.self, from: data) {
+            viewModel?.onCommand(cmd)
+        }
     }
 
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {

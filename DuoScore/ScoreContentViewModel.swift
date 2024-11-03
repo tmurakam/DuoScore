@@ -7,6 +7,10 @@ import Foundation
 import SwiftUI
 import PDFKit
 
+struct Command : Codable {
+    let page: Int
+}
+
 class ScoreContentViewModel : ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var showToolbar = true
@@ -14,6 +18,10 @@ class ScoreContentViewModel : ObservableObject {
     private var url: URL?
     private var pdfViewContorller: PdfViewController?
     private let peerManager = PeerManager()
+    
+    init() {
+        peerManager.viewModel = self
+    }
     
     func setUrl(url: URL?) {
         self.url = url
@@ -81,25 +89,44 @@ class ScoreContentViewModel : ObservableObject {
     }
     
     func onNextPage() {
+        if peerManager.isSecondary() {
+            return // TODO:
+        }
+        
         var cur = pdfViewContorller?.getCurrentPage() ?? -1
         if cur < 0 {
             return
         }
         let maxPage = (pdfDocument?.pageCount ?? 0) - 1
-        if cur < maxPage {
-            cur += 1
+        let increment = peerManager.isPrimary() ? 2 : 1
+        if cur + increment <= maxPage {
+            cur += increment
             pdfViewContorller?.goToPage(page: cur)
+            sendPageToPeer(page: cur + 1)
         }
     }
     
     func onPrevPage() {
-        var cur = pdfViewContorller?.getCurrentPage() ?? -1
-        if cur <= 0 {
-            return
+        if peerManager.isSecondary() {
+            return // TODO:
         }
-
-        cur -= 1
-        pdfViewContorller?.goToPage(page: cur)
+        
+        var cur = pdfViewContorller?.getCurrentPage() ?? -1
+        let decrement = peerManager.isPrimary() ? 2 : 1
+        if cur - decrement >= 0 {
+            cur -= decrement
+            pdfViewContorller?.goToPage(page: cur)
+            sendPageToPeer(page: cur + 1)
+        }
+    }
+    
+    func sendPageToPeer(page: Int) {
+        let cmd = Command(page: page)
+        peerManager.sendCommand(cmd)
+    }
+    
+    func onCommand(_ command: Command) {
+        pdfViewContorller?.goToPage(page: command.page)
     }
     
     func invite() {
