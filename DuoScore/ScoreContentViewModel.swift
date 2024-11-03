@@ -34,11 +34,48 @@ class ScoreContentViewModel : ObservableObject {
         showToolbar = !showToolbar
     }
     
+    func loadPdf(url: URL) {
+        let doc = PDFDocument(url: url)
+        if doc == nil {
+            print("Failed to load PDF: document: \(url)")
+        } else {
+            self.pdfDocument = doc
+            pdfViewContorller?.setPdfDocument(doc: doc!)
+        }
+    }
+
     func openFile() {
-        pdfViewContorller?.openFile()
+        //pdfViewContorller?.openFile()
+        let picker = DocumentPicker { urls in
+            if let url = urls.first {
+                if url.startAccessingSecurityScopedResource() {
+                    defer { url.stopAccessingSecurityScopedResource() }
+                    do {
+                        let isReachable = try url.checkResourceIsReachable()
+                        if !isReachable {
+                            print("Attempt to download from iCloud")
+                            try FileManager.default.startDownloadingUbiquitousItem(at: url)
+                            self.observeFiledownload(url: url)
+                        } else {
+                            self.loadPdf(url: url)
+                        }
+                    } catch {
+                        print("Error: \(error)")
+                    }
+                } else {
+                    print("startAccessingSecurityScopedResource() failed")
+                }
+            }
+        }
+        
+        let hostingController = UIHostingController(rootView: picker)
+        pdfViewContorller?.present(hostingController, animated: true, completion: nil)
     }
     
-    func loadPdf(url: URL) {
-        pdfViewContorller?.loadPDF(url: url)
+    private func observeFiledownload(url: URL) {
+        let c = NSFileCoordinator()
+        c.coordinate(readingItemAt: url, options: [], error: nil) { newURL in
+            loadPdf(url: newURL)
+        }
     }
 }

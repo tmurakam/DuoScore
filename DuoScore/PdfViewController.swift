@@ -104,51 +104,11 @@ class PdfViewController: UIViewController {
         }
     }
     
-    func openFile() {
-        let picker = DocumentPicker { urls in
-            if let url = urls.first {
-                if url.startAccessingSecurityScopedResource() {
-                    defer { url.stopAccessingSecurityScopedResource() }
-                    do {
-                        let isReachable = try url.checkResourceIsReachable()
-                        if !isReachable {
-                            print("Attempt to download from iCloud")
-                            try FileManager.default.startDownloadingUbiquitousItem(at: url)
-                            self.observeFiledownload(url: url)
-                        } else {
-                            self.loadPDF(url: url)
-                        }
-                    } catch {
-                        print("Error: \(error)")
-                    }
-                } else {
-                    print("startAccessingSecurityScopedResource() failed")
-                }
-            }
-        }
-        
-        let hostingController = UIHostingController(rootView: picker)
-        self.present(hostingController, animated: true, completion: nil)
+    func setPdfDocument(doc: PDFDocument) {
+        self.pdfView.document = doc
+        setScaleFactor()
     }
-    
-    func loadPDF(url: URL) {
-        let doc = PDFDocument(url: url)
-        if doc == nil {
-            print("Failed to load PDF: document: \(url)")
-        } else {
-            self.pdfContentViewModel?.pdfDocument = doc
-            self.pdfView.document = doc
-            setScaleFactor()
-        }
-    }
-    
-    private func observeFiledownload(url: URL) {
-        let c = NSFileCoordinator()
-        c.coordinate(readingItemAt: url, options: [], error: nil) { newURL in
-            loadPDF(url: newURL)
-        }
-    }
-    
+  
     private func setScaleFactor() {
         if let page = pdfView.document?.page(at: 0) {
             let pdfViewBounds = pdfView.bounds
