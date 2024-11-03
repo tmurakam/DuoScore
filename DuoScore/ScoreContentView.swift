@@ -35,8 +35,17 @@ struct ScoreContentView: View {
                         }
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            
+                        Menu(content: {
+                            Button(action: {
+                                viewModel.invite()
+                            }) {
+                                Text("Invite")
+                            }
+                            Button(action: {
+                                viewModel.advertise()
+                            }) {
+                                Text("Advertise")
+                            }
                         }) {
                             Image(systemName: "ellipsis.circle")
                         }

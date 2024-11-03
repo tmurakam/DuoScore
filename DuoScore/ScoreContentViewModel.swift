@@ -13,6 +13,7 @@ class ScoreContentViewModel : ObservableObject {
     
     private var url: URL?
     private var pdfViewContorller: PdfViewController?
+    private let peerManager = PeerManager()
     
     func setUrl(url: URL?) {
         self.url = url
@@ -77,5 +78,13 @@ class ScoreContentViewModel : ObservableObject {
         c.coordinate(readingItemAt: url, options: [], error: nil) { newURL in
             loadPdf(url: newURL)
         }
+    }
+    
+    func invite() {
+        peerManager.invite()
+    }
+    
+    func advertise() {
+        peerManager.advertise()
     }
 }
