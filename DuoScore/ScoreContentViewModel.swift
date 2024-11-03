@@ -12,9 +12,14 @@ class ScoreContentViewModel : ObservableObject {
     @Published var showToolbar = true
     
     private var url: URL?
+    private var pdfViewContorller: PdfViewController?
     
     func setUrl(url: URL?) {
         self.url = url
+    }
+    
+    func setPdfViewController(pdfViewController: PdfViewController) {
+        pdfViewContorller = pdfViewController
     }
     
     func loadPDF() {
@@ -29,6 +34,6 @@ class ScoreContentViewModel : ObservableObject {
     }
     
     func openFile() {
-        
+        pdfViewContorller?.openFile()
     }
 }

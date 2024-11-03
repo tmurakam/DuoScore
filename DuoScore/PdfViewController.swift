@@ -16,6 +16,7 @@ struct PdfViewWrapper: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> PdfViewController {
         let vc = PdfViewController()
         vc.pdfContentViewModel = viewModel
+        viewModel.setPdfViewController(pdfViewController: vc)  // TODO: circular
         return vc
     }
     
@@ -103,7 +104,7 @@ class PdfViewController: UIViewController {
         }
     }
     
-    private func showMenu() {
+    func openFile() {
         let picker = DocumentPicker { urls in
             if let url = urls.first {
                 if url.startAccessingSecurityScopedResource() {
