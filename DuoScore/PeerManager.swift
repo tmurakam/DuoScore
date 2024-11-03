@@ -11,6 +11,9 @@ class PeerManager : NSObject {
     let peerID: MCPeerID
     var advertiser: MCNearbyServiceAdvertiser?
     
+    var isConnected = false
+    var isPrimary = false
+    
     override init() {
         peerID = MCPeerID(displayName: UIDevice.current.name)
         session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .optional)
@@ -19,6 +22,7 @@ class PeerManager : NSObject {
     }
     
     func invite() {
+        isPrimary = true
         let browser = MCBrowserViewController(serviceType: "DuoScore", session: session)
         browser.delegate = self
         
@@ -32,8 +36,8 @@ class PeerManager : NSObject {
         return window?.rootViewController
     }
     
-    
     func advertise() {
+        isPrimary = false
         advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: "DuoScore")
         advertiser?.delegate = self
         advertiser?.startAdvertisingPeer()
@@ -43,22 +47,43 @@ class PeerManager : NSObject {
         advertiser?.stopAdvertisingPeer()
         advertiser = nil
     }
+    
+    func disconnect() {
+        isConnected = false
+        stopAdvertise()
+        session.disconnect()
+    }
 }
 
 extension PeerManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        switch state {
+        case .connecting:
+            print("Connecting to \(peerID.displayName)")
+        case .connected:
+            print("Connected to \(peerID.displayName)")
+            isConnected = true
+        case .notConnected:
+            print("Not connected to \(peerID.displayName)")
+            isConnected = false
+        @unknown default:
+            print("Unknown state")
+        }
     }
 
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
     }
 
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+        // do nothing
     }
 
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+        // do nothing
     }
 
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: (any Error)?) {
+        // do nothing
     }
     
     func session(_ session: MCSession, didReceiveCertificate certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {
