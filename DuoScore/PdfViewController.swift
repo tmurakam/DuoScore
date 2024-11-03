@@ -72,7 +72,8 @@ class PdfViewController: UIViewController {
         } else if (rx < 0.25) {
             pdfView.goToPreviousPage(self)
         } else {
-            showMenu()
+            //showMenu()
+            pdfContentViewModel?.toggleToolBar()
         }
     }
     

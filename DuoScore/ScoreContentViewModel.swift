@@ -9,7 +9,7 @@ import PDFKit
 
 class ScoreContentViewModel : ObservableObject {
     @Published var pdfDocument: PDFDocument?
-    @Published var showToolbar = true
+    @Published var showToolbar = false
     
     private var url: URL?
     
@@ -22,5 +22,9 @@ class ScoreContentViewModel : ObservableObject {
         if let url = url {
             pdfDocument = PDFDocument(url: url)
         }
+    }
+    
+    func toggleToolBar() {
+        showToolbar = !showToolbar
     }
 }
