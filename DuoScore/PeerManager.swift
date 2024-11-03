@@ -22,16 +22,26 @@ class PeerManager : NSObject {
         let browser = MCBrowserViewController(serviceType: "DuoScore", session: session)
         browser.delegate = self
         
+        getRootViewController()?.present(browser, animated: true, completion: nil)
+    }
+    
+    func getRootViewController() -> UIViewController? {
         let scenes = UIApplication.shared.connectedScenes
         let windowScenes = scenes.first as? UIWindowScene
         let window = windowScenes?.windows.first
-        window?.rootViewController?.present(browser, animated: true, completion: nil)
+        return window?.rootViewController
     }
+    
     
     func advertise() {
         advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: "DuoScore")
         advertiser?.delegate = self
         advertiser?.startAdvertisingPeer()
+    }
+    
+    func stopAdvertise() {
+        advertiser?.stopAdvertisingPeer()
+        advertiser = nil
     }
 }
 
@@ -54,7 +64,24 @@ extension PeerManager: MCSessionDelegate {
 
 extension PeerManager: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        invitationHandler(true, session)
+        //invitationHandler(true, session)
+        
+        let alert = UIAlertController(title: "Allow Connection?", message: "Allow Connection from \(peerID.displayName)", preferredStyle: .alert)
+        
+        let delete = UIAlertAction(title: "Allow", style: .default, handler: { (action) -> Void in
+            invitationHandler(true, self.session)
+            print("Allow")
+        })
+        
+        let cancel = UIAlertAction(title: "Deny", style: .cancel, handler: { (action) -> Void in
+            invitationHandler(false, self.session)
+            print("Deny")
+        })
+        
+        alert.addAction(delete)
+        alert.addAction(cancel)
+        
+        getRootViewController()?.present(alert, animated: true, completion: nil)
     }
 }
 
