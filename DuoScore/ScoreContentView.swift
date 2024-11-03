@@ -6,8 +6,8 @@
 import SwiftUI
 import PDFKit
 
-struct PDFContentView: View {
-    @StateObject private var viewModel = PDFContentViewModel()
+struct ScoreContentView: View {
+    @StateObject private var viewModel = ScoreContentViewModel()
     
     let url: URL?
     
@@ -15,7 +15,7 @@ struct PDFContentView: View {
         NavigationStack {
             VStack {
                 if let pdfDocument = viewModel.pdfDocument {
-                    PDFViewWrapper(pdfContentViewModel: viewModel)
+                    PdfViewWrapper(pdfContentViewModel: viewModel)
                         .edgesIgnoringSafeArea(.all)
                 } else {
                     Text("Loading PDF...")
@@ -46,5 +46,5 @@ struct PDFContentView: View {
 }
 
 #Preview {
-    PDFContentView(url: nil)
+    ScoreContentView(url: nil)
 }

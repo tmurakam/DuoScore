@@ -6,27 +6,27 @@
 import SwiftUI
 import PDFKit
 
-struct PDFViewWrapper: UIViewControllerRepresentable {
-    var viewModel: PDFContentViewModel
+struct PdfViewWrapper: UIViewControllerRepresentable {
+    var viewModel: ScoreContentViewModel
 
-    init(pdfContentViewModel: PDFContentViewModel) {
+    init(pdfContentViewModel: ScoreContentViewModel) {
         self.viewModel = pdfContentViewModel
     }
 
-    func makeUIViewController(context: Context) -> PDFViewController {
-        let vc = PDFViewController()
+    func makeUIViewController(context: Context) -> PdfViewController {
+        let vc = PdfViewController()
         vc.pdfContentViewModel = viewModel
         return vc
     }
     
-    func updateUIViewController(_ uiViewController: PDFViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: PdfViewController, context: Context) {
         uiViewController.pdfContentViewModel = viewModel
     }
 }
 
-class PDFViewController: UIViewController {
+class PdfViewController: UIViewController {
     var pdfView = PDFView()
-    var pdfContentViewModel: PDFContentViewModel? {
+    var pdfContentViewModel: ScoreContentViewModel? {
         didSet {
             pdfView.document = pdfContentViewModel?.pdfDocument
         }
@@ -67,13 +67,12 @@ class PDFViewController: UIViewController {
         
         //print("rx: \(rx), ry: \(ry)")
 
-        if (ry < 0.25) {
-            showMenu()
-        }
-        else if (rx > 0.75) {
+        if (rx > 0.75) {
             pdfView.goToNextPage(self)
         } else if (rx < 0.25) {
             pdfView.goToPreviousPage(self)
+        } else {
+            showMenu()
         }
     }
     

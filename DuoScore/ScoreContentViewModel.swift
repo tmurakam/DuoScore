@@ -7,7 +7,7 @@ import Foundation
 import SwiftUI
 import PDFKit
 
-class PDFContentViewModel : ObservableObject {
+class ScoreContentViewModel : ObservableObject {
     @Published var pdfDocument: PDFDocument?
     @Published var showToolbar = true
     
