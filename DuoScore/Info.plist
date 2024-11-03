@@ -13,8 +13,8 @@
 	</dict>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_DuoScore.tcp</string>
-		<string>_DuoScore.udp</string>
+		<string>_DuoScore._tcp</string>
+		<string>_DuoScore._udp</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
@@ -22,6 +22,8 @@
 		<true/>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Syncronize page turn events between multiple iOS devices using MultipeerConnectivity</string>
+	<key>NSLocalNetworkUsageDescription</key>
 	<string>Syncronize page turn events between multiple iOS devices using MultipeerConnectivity</string>
 </dict>
 </plist>
