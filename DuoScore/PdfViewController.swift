@@ -73,9 +73,9 @@ class PdfViewController: UIViewController {
         } else if (rx < 0.25) {
             pdfView.goToPreviousPage(self)
         } else {
-            //showMenu()
             pdfContentViewModel?.toggleToolBar()
         }
+        setScaleFactor()
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -131,13 +131,14 @@ class PdfViewController: UIViewController {
         self.present(hostingController, animated: true, completion: nil)
     }
     
-    private func loadPDF(url: URL) {
+    func loadPDF(url: URL) {
         let doc = PDFDocument(url: url)
         if doc == nil {
             print("Failed to load PDF: document: \(url)")
         } else {
             self.pdfContentViewModel?.pdfDocument = doc
             self.pdfView.document = doc
+            setScaleFactor()
         }
     }
     
@@ -145,6 +146,20 @@ class PdfViewController: UIViewController {
         let c = NSFileCoordinator()
         c.coordinate(readingItemAt: url, options: [], error: nil) { newURL in
             loadPDF(url: newURL)
+        }
+    }
+    
+    private func setScaleFactor() {
+        if let page = pdfView.document?.page(at: 0) {
+            let pdfViewBounds = pdfView.bounds
+            let pageBounds = page.bounds(for: .mediaBox)
+            let scale = min(pdfViewBounds.width / pageBounds.width, pdfViewBounds.height / pageBounds.height)
+            if scale > 0 {
+                pdfView.autoScales = false
+                pdfView.scaleFactor = scale
+                pdfView.minScaleFactor = scale
+                pdfView.maxScaleFactor = scale
+            }
         }
     }
 }

@@ -26,6 +26,7 @@ class ScoreContentViewModel : ObservableObject {
         if pdfDocument != nil { return }
         if let url = url {
             pdfDocument = PDFDocument(url: url)
+            //loadPdf(url: url)
         }
     }
     
@@ -35,5 +36,9 @@ class ScoreContentViewModel : ObservableObject {
     
     func openFile() {
         pdfViewContorller?.openFile()
+    }
+    
+    func loadPdf(url: URL) {
+        pdfViewContorller?.loadPDF(url: url)
     }
 }
