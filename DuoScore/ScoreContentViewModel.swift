@@ -80,6 +80,28 @@ class ScoreContentViewModel : ObservableObject {
         }
     }
     
+    func onNextPage() {
+        var cur = pdfViewContorller?.getCurrentPage() ?? -1
+        if cur < 0 {
+            return
+        }
+        let maxPage = (pdfDocument?.pageCount ?? 0) - 1
+        if cur < maxPage {
+            cur += 1
+            pdfViewContorller?.goToPage(page: cur)
+        }
+    }
+    
+    func onPrevPage() {
+        var cur = pdfViewContorller?.getCurrentPage() ?? -1
+        if cur <= 0 {
+            return
+        }
+
+        cur -= 1
+        pdfViewContorller?.goToPage(page: cur)
+    }
+    
     func invite() {
         peerManager.invite()
     }

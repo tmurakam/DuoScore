@@ -15,21 +15,22 @@ struct PdfViewWrapper: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> PdfViewController {
         let vc = PdfViewController()
-        vc.pdfContentViewModel = viewModel
+        vc.viewModel = viewModel
         viewModel.setPdfViewController(pdfViewController: vc)  // TODO: circular
         return vc
     }
     
     func updateUIViewController(_ uiViewController: PdfViewController, context: Context) {
-        uiViewController.pdfContentViewModel = viewModel
+        uiViewController.viewModel = viewModel
     }
 }
 
 class PdfViewController: UIViewController {
     var pdfView = PDFView()
-    var pdfContentViewModel: ScoreContentViewModel? {
+
+    var viewModel: ScoreContentViewModel? {
         didSet {
-            pdfView.document = pdfContentViewModel?.pdfDocument
+            pdfView.document = viewModel?.pdfDocument
         }
     }
     
@@ -64,16 +65,16 @@ class PdfViewController: UIViewController {
         //print("Tapped at: \(location)")
 
         let rx = Double(location.x) / pdfView.frame.width
-        let ry = Double(location.y) / pdfView.frame.height
+        //let ry = Double(location.y) / pdfView.frame.height
         
         //print("rx: \(rx), ry: \(ry)")
 
         if (rx > 0.75) {
-            pdfView.goToNextPage(self)
+            viewModel?.onNextPage()
         } else if (rx < 0.25) {
-            pdfView.goToPreviousPage(self)
+            viewModel?.onPrevPage()
         } else {
-            pdfContentViewModel?.toggleToolBar()
+            viewModel?.toggleToolBar()
         }
         setScaleFactor()
     }
@@ -82,11 +83,9 @@ class PdfViewController: UIViewController {
         for press in presses {
             if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
                 print("press prev")
-                //pdfView.prevPage()
             }
             if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
                 print("press next")
-                //pdfView.nextPage()
             }
         }
     }
@@ -95,14 +94,39 @@ class PdfViewController: UIViewController {
         for press in presses {
             if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
                 print("release prev")
-                pdfView.goToPreviousPage(self)
+                viewModel?.onPrevPage()
             }
             if press.key?.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
                 print("release next")
-                pdfView.goToNextPage(self)
+                viewModel?.onNextPage()
             }
         }
     }
+    
+    func getCurrentPage() -> Int {
+        if let curPage = pdfView.currentPage {
+            let idx = pdfView.document?.index(for: curPage) ?? 0
+            return idx
+        } else {
+            return -1
+        }
+    }
+    
+    func goToPage(page: Int) {
+        if let page = pdfView.document?.page(at: page) {
+            pdfView.go(to: page)
+        }
+    }
+    
+    /*
+    func goToNextPage() {
+        pdfView.goToNextPage(self)
+    }
+    
+    func goToPreviousPage() {
+        pdfView.goToPreviousPage(self)
+    }
+    */
     
     func setPdfDocument(doc: PDFDocument) {
         self.pdfView.document = doc
