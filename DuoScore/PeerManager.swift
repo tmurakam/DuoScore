@@ -13,7 +13,7 @@ class PeerManager : NSObject {
     
     override init() {
         peerID = MCPeerID(displayName: UIDevice.current.name)
-        session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
+        session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .optional)
         super.init()
         session.delegate = self
     }
@@ -59,6 +59,10 @@ extension PeerManager: MCSessionDelegate {
     }
 
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: (any Error)?) {
+    }
+    
+    func session(_ session: MCSession, didReceiveCertificate certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {
+        certificateHandler(true)
     }
 }
 
