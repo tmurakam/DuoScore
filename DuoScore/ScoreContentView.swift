@@ -28,9 +28,17 @@ struct ScoreContentView: View {
             .toolbar {
                 if viewModel.showToolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                        } label: {
-                            Text("Test")
+                        Button(action: {
+                            viewModel.openFile()
+                        }) {
+                            Image(systemName: "folder")
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            
+                        }) {
+                            Image(systemName: "ellipsis.circle")
                         }
                     }
                 }
