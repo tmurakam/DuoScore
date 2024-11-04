@@ -12,40 +12,37 @@ struct ScoreContentView: View {
     let url: URL?
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                if let pdfDocument = viewModel.pdfDocument {
-                    PdfViewWrapper(pdfContentViewModel: viewModel)
-                        .edgesIgnoringSafeArea(.all)
-                } else {
-                    Text("Loading PDF...")
-                }
+        VStack {
+            if let pdfDocument = viewModel.pdfDocument {
+                PdfViewWrapper(pdfContentViewModel: viewModel)
+                    .edgesIgnoringSafeArea(.all)
+            } else {
+                Text("Loading PDF...")
             }
-            .onAppear {
-                viewModel.setUrl(url: url)
-                viewModel.loadPDF()
-            }
-            .toolbar {
-                if viewModel.showToolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Menu(content: {
-                            Button(action: {
-                                viewModel.invite()
-                            }) {
-                                Text("Invite")
-                            }
-                            Button(action: {
-                                viewModel.advertise()
-                            }) {
-                                Text("Advertise")
-                            }
-                        }) {
-                            Image(systemName: "ellipsis.circle")
-                        }
+        }
+        .onAppear {
+            viewModel.setUrl(url: url)
+            viewModel.loadPDF()
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Menu(content: {
+                    Button(action: {
+                        viewModel.invite()
+                    }) {
+                        Text("Invite")
                     }
+                    Button(action: {
+                        viewModel.advertise()
+                    }) {
+                        Text("Advertise")
+                    }
+                }) {
+                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
+        .navigationBarHidden(!viewModel.showToolbar)
     }
     
     init (url: URL?) {
