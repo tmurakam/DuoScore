@@ -24,6 +24,9 @@ struct ScoreContentView: View {
             viewModel.setUrl(url: url)
             viewModel.loadPDF()
         }
+        .onDisappear() {
+            viewModel.onDisappear()
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu(content: {

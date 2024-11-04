@@ -30,13 +30,20 @@ class ScoreContentViewModel : ObservableObject {
     func setPdfViewController(pdfViewController: PdfViewController) {
         pdfViewContorller = pdfViewController
     }
-    
+
     func loadPDF() {
         if pdfDocument != nil { return }
         if let url = url {
             pdfDocument = PDFDocument(url: url)
             //loadPdf(url: url)
         }
+    }
+    
+    func onDisappear() {
+        peerManager.disconnect()
+
+        peerManager.viewModel = nil
+        pdfViewContorller?.viewModel = nil
     }
     
     func toggleToolBar() {
