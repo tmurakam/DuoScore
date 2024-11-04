@@ -96,8 +96,10 @@ class ScoreContentViewModel : ObservableObject {
     }
     
     func sendPageToPeer(page: Int) {
-        let cmd = Command(page: page)
-        peerManager.sendCommand(cmd)
+        if peerManager.isConnected() {
+            let cmd = Command(page: page)
+            peerManager.sendCommand(cmd)
+        }
     }
     
     func onCommand(_ command: Command) {
