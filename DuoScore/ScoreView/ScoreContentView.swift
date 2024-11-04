@@ -23,9 +23,11 @@ struct ScoreContentView: View {
         .onAppear {
             viewModel.setUrl(url: url)
             viewModel.loadPDF()
+            UIApplication.shared.isIdleTimerDisabled = true
         }
         .onDisappear() {
             viewModel.onDisappear()
+            UIApplication.shared.isIdleTimerDisabled = false
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
