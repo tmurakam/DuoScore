@@ -22,7 +22,7 @@ struct FileView: View {
                     Button(action: {
                         viewModel.chooseFileToImport()
                     }) {
-                        Image(systemName: "square.and.arrow.down")
+                        Image(systemName: "icloud.and.arrow.down")
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
