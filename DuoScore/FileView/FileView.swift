@@ -10,16 +10,21 @@ struct FileView: View {
     
     var body: some View {
         NavigationStack {
-            List(viewModel.scores) {
-                Text($0.name)
+            List(viewModel.scores) { item in
+                Button(
+                    action: {
+                        viewModel.onSelect(score: item)
+                    }, label: {
+                        Text(item.name)
+                    }
+                )
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        //viewModel.openFile()
-                        print("file")
+                        viewModel.chooseFileToImport()
                     }) {
-                        Image(systemName: "folder")
+                        Image(systemName: "square.and.arrow.down")
                     }
                 }
             }
