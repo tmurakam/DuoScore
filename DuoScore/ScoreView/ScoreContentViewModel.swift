@@ -13,7 +13,7 @@ struct Command : Codable {
 
 class ScoreContentViewModel : ObservableObject {
     @Published var pdfDocument: PDFDocument?
-    @Published var showToolbar = false
+    @Published var showToolbar = true
     
     private var url: URL?
     private var pdfViewContorller: PdfViewController?
@@ -105,14 +105,4 @@ class ScoreContentViewModel : ObservableObject {
     func onCommand(_ command: Command) {
         pdfViewContorller?.goToPage(page: command.page)
     }
-    
-    /*
-    func invite() {
-        peerManager.invite()
-    }
-    
-    func advertise() {
-        peerManager.advertise()
-    }
-    */
 }

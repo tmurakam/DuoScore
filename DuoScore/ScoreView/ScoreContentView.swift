@@ -7,7 +7,7 @@ import SwiftUI
 import PDFKit
 
 struct ScoreContentView: View {
-    @StateObject private var viewModel = ScoreContentViewModel()
+    @StateObject var viewModel = ScoreContentViewModel()
     
     let url: URL?
     
@@ -29,33 +29,11 @@ struct ScoreContentView: View {
             viewModel.onDisappear()
             UIApplication.shared.isIdleTimerDisabled = false
         }
-        /*
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Menu(content: {
-                    Button(action: {
-                        viewModel.invite()
-                    }) {
-                        Text("Invite")
-                    }
-                    Button(action: {
-                        viewModel.advertise()
-                    }) {
-                        Text("Advertise")
-                    }
-                }) {
-                    Image(systemName: "ellipsis.circle")
-                }
-            }
-        }
-        */
         .navigationBarHidden(!viewModel.showToolbar)
     }
     
     init (url: URL?) {
         self.url = url
-        //viewModel.setUrl(url: url)
-        //viewModel.loadPDF()
     }
 }
 

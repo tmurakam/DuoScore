@@ -118,16 +118,6 @@ class PdfViewController: UIViewController {
         }
     }
     
-    /*
-    func goToNextPage() {
-        pdfView.goToNextPage(self)
-    }
-    
-    func goToPreviousPage() {
-        pdfView.goToPreviousPage(self)
-    }
-    */
-    
     func setPdfDocument(doc: PDFDocument) {
         self.pdfView.document = doc
         setScaleFactor()
