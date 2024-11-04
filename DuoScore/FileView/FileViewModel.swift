@@ -120,4 +120,9 @@ class FileViewModel : ObservableObject {
     func disconnect() {
         PeerManager.shared.disconnect()
     }
+    
+    func getHelpView() -> some View {
+        let url = Bundle.main.url(forResource: "Help", withExtension: "pdf")
+        return ScoreContentView(url: url)
+    }
 }

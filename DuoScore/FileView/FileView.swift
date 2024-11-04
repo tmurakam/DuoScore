@@ -45,6 +45,17 @@ struct FileView: View {
                         Image(systemName: "point.3.filled.connected.trianglepath.dotted")
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu(content: {
+                        NavigationLink {
+                            viewModel.getHelpView()
+                        } label: {
+                            Text("Help")
+                        }
+                    }) {
+                        Image(systemName: "questionmark.circle")
+                    }
+                }
             }
         }
     }
