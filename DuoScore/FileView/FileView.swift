@@ -11,13 +11,11 @@ struct FileView: View {
     var body: some View {
         NavigationStack {
             List(viewModel.scores) { item in
-                Button(
-                    action: {
-                        viewModel.onSelect(score: item)
-                    }, label: {
-                        Text(item.name)
-                    }
-                )
+                NavigationLink {
+                    ScoreContentView(url: item.url)
+                } label: {
+                    Text(item.name)
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

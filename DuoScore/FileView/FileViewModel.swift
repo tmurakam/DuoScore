@@ -8,6 +8,7 @@ import SwiftUI
 struct Score: Identifiable {
     let id = UUID()
     let name: String
+    let url: URL
 }
 
 class FileViewModel : ObservableObject {
@@ -26,8 +27,8 @@ class FileViewModel : ObservableObject {
         do {
             let fileUrls = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil, options: [])
             
-            self.scores = fileUrls.map {
-                Score(name: $0.lastPathComponent)
+            self.scores = fileUrls.map { url in
+                Score(name: url.lastPathComponent, url: url)
             }
         } catch {
             print("Failed to get files: \(error)")
