@@ -25,6 +25,26 @@ struct FileView: View {
                         Image(systemName: "square.and.arrow.down")
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu(content: {
+                        Button(action: { viewModel.invite() }) {
+                            Text("Invite secondary device")
+                        }
+                        .disabled(PeerManager.shared.isConnected())
+                        
+                        Button(action: { viewModel.advertise() }) {
+                            Text("Advertise as secondary device")
+                        }
+                        .disabled(PeerManager.shared.isConnected())
+                        
+                        Button(action: { viewModel.disconnect() }) {
+                            Text("Disconnect")
+                        }
+                        .disabled(!PeerManager.shared.isConnected())
+                    }) {
+                        Image(systemName: "point.3.filled.connected.trianglepath.dotted")
+                    }
+                }
             }
         }
     }

@@ -16,6 +16,8 @@ class PeerManager : NSObject {
 
     var viewModel: ScoreContentViewModel?
     
+    static var shared = PeerManager()
+    
     override init() {
         peerID = MCPeerID(displayName: UIDevice.current.name)
         session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .optional)
@@ -23,6 +25,10 @@ class PeerManager : NSObject {
         session.delegate = self
     }
     
+    func isConnected() -> Bool {
+        return _isConnected
+    }
+
     func isPrimary() -> Bool {
         _isConnected && _isPrimary
     }

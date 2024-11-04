@@ -108,4 +108,16 @@ class FileViewModel : ObservableObject {
         alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
         getRootViewController()?.present(alert, animated: true, completion: nil)
     }
+    
+    func invite() {
+        PeerManager.shared.invite()
+    }
+    
+    func advertise() {
+        PeerManager.shared.advertise()
+    }
+    
+    func disconnect() {
+        PeerManager.shared.disconnect()
+    }
 }

@@ -17,10 +17,14 @@ class ScoreContentViewModel : ObservableObject {
     
     private var url: URL?
     private var pdfViewContorller: PdfViewController?
-    private let peerManager = PeerManager()
+    private let peerManager = PeerManager.shared
     
     init() {
         peerManager.viewModel = self
+    }
+    
+    deinit {
+        peerManager.viewModel = nil
     }
     
     func setUrl(url: URL?) {
@@ -40,8 +44,7 @@ class ScoreContentViewModel : ObservableObject {
     }
     
     func onDisappear() {
-        peerManager.disconnect()
-
+        //peerManager.disconnect()
         peerManager.viewModel = nil
         pdfViewContorller?.viewModel = nil
     }
@@ -101,6 +104,7 @@ class ScoreContentViewModel : ObservableObject {
         pdfViewContorller?.goToPage(page: command.page)
     }
     
+    /*
     func invite() {
         peerManager.invite()
     }
@@ -108,4 +112,5 @@ class ScoreContentViewModel : ObservableObject {
     func advertise() {
         peerManager.advertise()
     }
+    */
 }

@@ -29,6 +29,7 @@ struct ScoreContentView: View {
             viewModel.onDisappear()
             UIApplication.shared.isIdleTimerDisabled = false
         }
+        /*
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu(content: {
@@ -47,6 +48,7 @@ struct ScoreContentView: View {
                 }
             }
         }
+        */
         .navigationBarHidden(!viewModel.showToolbar)
     }
     
