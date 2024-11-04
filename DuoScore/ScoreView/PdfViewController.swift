@@ -69,9 +69,9 @@ class PdfViewController: UIViewController {
         
         //print("rx: \(rx), ry: \(ry)")
 
-        if (rx > 0.75) {
+        if (rx > 0.7) {
             viewModel?.onNextPage()
-        } else if (rx < 0.25) {
+        } else if (rx < 0.3) {
             viewModel?.onPrevPage()
         } else {
             viewModel?.toggleToolBar()
