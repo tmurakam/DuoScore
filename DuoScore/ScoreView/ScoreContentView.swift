@@ -27,13 +27,6 @@ struct ScoreContentView: View {
             }
             .toolbar {
                 if viewModel.showToolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            viewModel.openFile()
-                        }) {
-                            Image(systemName: "folder")
-                        }
-                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Menu(content: {
                             Button(action: {

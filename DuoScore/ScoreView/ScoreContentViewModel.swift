@@ -13,7 +13,7 @@ struct Command : Codable {
 
 class ScoreContentViewModel : ObservableObject {
     @Published var pdfDocument: PDFDocument?
-    @Published var showToolbar = true
+    @Published var showToolbar = false
     
     private var url: URL?
     private var pdfViewContorller: PdfViewController?
@@ -53,41 +53,6 @@ class ScoreContentViewModel : ObservableObject {
         }
     }
 
-    func openFile() {
-        //pdfViewContorller?.openFile()
-        let picker = DocumentPicker { urls in
-            if let url = urls.first {
-                if url.startAccessingSecurityScopedResource() {
-                    defer { url.stopAccessingSecurityScopedResource() }
-                    do {
-                        let isReachable = try url.checkResourceIsReachable()
-                        if !isReachable {
-                            print("Attempt to download from iCloud")
-                            try FileManager.default.startDownloadingUbiquitousItem(at: url)
-                            self.observeFiledownload(url: url)
-                        } else {
-                            self.loadPdf(url: url)
-                        }
-                    } catch {
-                        print("Error: \(error)")
-                    }
-                } else {
-                    print("startAccessingSecurityScopedResource() failed")
-                }
-            }
-        }
-        
-        let hostingController = UIHostingController(rootView: picker)
-        pdfViewContorller?.present(hostingController, animated: true, completion: nil)
-    }
-    
-    private func observeFiledownload(url: URL) {
-        let c = NSFileCoordinator()
-        c.coordinate(readingItemAt: url, options: [], error: nil) { newURL in
-            loadPdf(url: newURL)
-        }
-    }
-    
     func onNextPage() {
         if peerManager.isSecondary() {
             return // TODO:
