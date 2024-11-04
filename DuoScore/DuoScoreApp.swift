@@ -11,6 +11,8 @@ struct DuoScoreApp: App {
         WindowGroup {
             let url = Bundle.main.url(forResource: "ballade4", withExtension: "pdf")!
             ScoreContentView(url: url)
+
+            //FileView()
         }
     }
 }
