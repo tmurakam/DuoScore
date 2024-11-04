@@ -134,6 +134,7 @@ class PdfViewController: UIViewController {
     }
   
     private func setScaleFactor() {
+        /*
         if let page = pdfView.document?.page(at: 0) {
             let pdfViewBounds = pdfView.bounds
             let pageBounds = page.bounds(for: .mediaBox)
@@ -145,5 +146,6 @@ class PdfViewController: UIViewController {
                 pdfView.maxScaleFactor = scale
             }
         }
+        */
     }
 }
